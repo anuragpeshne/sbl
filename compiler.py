@@ -2,30 +2,36 @@
 
 from sys import stdin
 
-if __name__ == "__main__":
-    compile_()
+def isDigit(c):
+    return ord(c) >= ord('0') and ord(c) <= ord('9')
 
-def compile_():
-    tokens = []
-    for c in stdin.read():
-        if c == '(':
-            tokens.append(LPAREN)
-        else if c == ')':
-            tokens.append(RPAREN)
-        else if isDigit(c):
-            tokens.append(NUM(scanNum()))
-        else if isChar(c):
+# (+ 2 3)
+# parse-sexp
+# parse-nextExp
+def parse(inp, loc):
+    ast = []
+    while loc < len(inp) and inp[loc] != ')':
+        if inp[loc] == '(':
+            ast.append(parse(inp), loc + 1)
+        elif inp[loc] == ')':
+            return ast
+        elif isDigit(inp[loc]):
+            tokens.append(scanNum(inp, loc + 1))
+        elif isChar(inp[loc]):
             string = scanStr()
             if string == 'lambda':
                 tokens.append(LAMBDA)
             else:
                 tokens.append(IDEN(string))
         else:
-            raise Error("unknown char" + c)
+            raise Error("unknown char" + inp[loc])
 
-    return tokens
+    return ast
 
 def parse():
     for token in tokens:
         if token == LPAREN:
             parse(tokens)
+
+if __name__ == "__main__":
+    compile_()
